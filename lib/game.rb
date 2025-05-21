@@ -27,14 +27,21 @@ class Game
   end
 
   def start_game
-    9.times { take_turn }
+    take_turn until board.full? == true
   end
 
   def take_turn
-    puts "#{@current_player.name}, which position will you place your #{@current_player.marker} (1-9)?"
+    print "#{@current_player.name}, which position will you place your #{@current_player.marker} (1-9)?: "
     choice = gets.to_i
-    board.update(choice, @current_player.marker)
-    board.print_board
-    switch_current_player
+
+    if @board.space_available?(choice) == false
+      puts 'Sorry, that space is already taken. Please try again.'
+      @board.print_board
+      take_turn
+    else
+      board.update(choice, @current_player.marker)
+      board.print_board
+      switch_current_player
+    end
   end
 end
