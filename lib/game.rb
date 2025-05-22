@@ -8,7 +8,6 @@ class Game
   attr_reader :player1, :player2, :board
 
   def initialize
-    puts 'Welcome to Tic-Tac-Toe!'
     print 'Declare your name, Player 1: '
     p1_name = gets.to_s.chomp
     print 'Declare your name, Player 2: '
@@ -18,6 +17,7 @@ class Game
     @player2 = Player.new(p2_name, 'O')
     @current_player = @player1
 
+    @game_finished = false
     @board = Board.new
     board.print_board
   end
@@ -27,7 +27,7 @@ class Game
   end
 
   def start_game
-    take_turn until board.full? == true
+    take_turn until @game_finished == true
   end
 
   def take_turn
@@ -35,13 +35,39 @@ class Game
     choice = gets.to_i
 
     if @board.space_available?(choice) == false
-      puts 'Sorry, that space is already taken. Please try again.'
-      @board.print_board
-      take_turn
+      deny_move
     else
-      board.update(choice, @current_player.marker)
-      board.print_board
-      switch_current_player
+      confirm_move(choice)
     end
+  end
+
+  def deny_move
+    puts "Sorry, #{@current_player.name}, that space is already taken. Please choose another."
+    @board.print_board
+    take_turn
+  end
+
+  def confirm_move(choice)
+    board.update(choice, @current_player.marker)
+    @current_player.spaces_taken.push(choice)
+    board.print_board
+    if board.three_in_a_row?(@current_player)
+      win_game(@current_player)
+    else
+      switch_current_player
+      return unless @board.full?
+
+      end_in_draw
+    end
+  end
+
+  def win_game(player)
+    puts "Game over! #{player.name} wins!"
+    @game_finished = true
+  end
+
+  def end_in_draw
+    puts "Cat's game! Nobody wins!"
+    @game_finished = true
   end
 end

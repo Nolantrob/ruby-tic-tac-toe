@@ -2,6 +2,8 @@
 
 # Declaration of Board Class
 class Board
+  LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]].freeze
+
   def initialize
     @board = Array.new(9, ' ')
   end
@@ -28,5 +30,11 @@ class Board
 
   def space_available?(space)
     @board[space - 1].include?(' ')
+  end
+
+  def three_in_a_row?(current_player)
+    LINES.any? do |line|
+      line.all? { |el| current_player.spaces_taken.include?(el) }
+    end
   end
 end
