@@ -1,11 +1,18 @@
 # frozen_string_literal: true
 
-require 'pry-byebug'
-
 require_relative 'lib/game'
 
 puts 'Welcome to Tic-Tac-Toe!'
 
-game = Game.new
+answer = ''
 
+confirmation_answers = ['yes', 'sure', 'yeah', 'alright', 'y', 'ye', 'ok', 'okay',
+                        'sounds good', 'aight']
+
+until confirmation_answers.include?(answer.downcase)
+  print 'Are you ready to play?: '
+  answer = gets.to_s.chomp
+end
+
+game = Game.new
 game.start_game
